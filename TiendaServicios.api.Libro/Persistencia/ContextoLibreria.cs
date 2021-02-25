@@ -14,6 +14,11 @@ namespace TiendaServicios.api.Libro.Persistencia
 
         }
 
-        public DbSet<LibreriaMaterial> LibreriaMaterial { get; set; }
+        public ContextoLibreria()
+        {
+
+        }
+
+        public virtual DbSet<LibreriaMaterial> LibreriaMaterial { get; set; }
     }
 }

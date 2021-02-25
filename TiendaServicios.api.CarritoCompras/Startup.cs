@@ -17,6 +17,7 @@ using TiendaServicios.api.CarritoCompras.Persistencia;
 using Pomelo.EntityFrameworkCore.MySql;
 using TiendaServicios.api.CarritoCompras.Aplicacion;
 using TiendaServicios.api.CarritoCompras.RemoteInterface;
+using TiendaServicios.api.CarritoCompras.RemoteServices;
 
 namespace TiendaServicios.api.CarritoCompras
 {
@@ -45,7 +46,7 @@ namespace TiendaServicios.api.CarritoCompras
                 config.BaseAddress = new Uri(Configuration["Services:Libros"]);
             });
 
-            services.AddScoped<ILibrosService,ILibrosService>();
+            services.AddScoped<ILibrosService,LibrosService>();
             //services.AddAutoMapper(typeof(Consulta.Manejador).Assembly);
         }
 
