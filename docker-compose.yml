@@ -22,7 +22,7 @@ services:
     image: ${DOCKER_REGISTRY-}tiendaserviciosapigateway
     build:
       context: .
-      dockerfile: ../TiendaServicios.api.Gateway/Dockerfile
+      dockerfile: TiendaServicios.api.Gateway/Dockerfile
 
 networks:
   default:

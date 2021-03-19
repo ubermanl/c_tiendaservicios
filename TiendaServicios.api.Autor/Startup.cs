@@ -8,7 +8,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TiendaServicios.api.Autor.Aplicacion;
+using TiendaServicios.api.Autor.ManejadorRabbit;
 using TiendaServicios.api.Autor.Persistencia;
+using TiendaServicios.RabbitMQ.Bus.BusRabbit;
+using TiendaServicios.RabbitMQ.Bus.Eventos;
+using TiendaServicios.RabbitMQ.Bus.Implement;
 
 namespace TiendaServicios.api.Autor
 {
@@ -25,6 +29,17 @@ namespace TiendaServicios.api.Autor
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers().AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssemblyContaining<Nuevo>());
+
+            services.AddSingleton<IRabbitEventBus, RabbitEventBus>( sp =>
+            {
+                var scopeFactory = sp.GetRequiredService<IServiceScopeFactory>();
+                return new RabbitEventBus(sp.GetService<IMediator>(), scopeFactory);
+            });
+
+            services.AddTransient<EmailEventoManejador>();
+
+            services.AddTransient<IEventoManejador<EmailEventoQueue>, EmailEventoManejador>();
+            
 
             services.AddDbContext<ContextoAutor>(options => {
                 options.UseNpgsql(Configuration.GetConnectionString("ConnectionDatabase"));
@@ -50,6 +65,9 @@ namespace TiendaServicios.api.Autor
             {
                 endpoints.MapControllers();
             });
+
+            var eventBus = app.ApplicationServices.GetRequiredService<IRabbitEventBus>();
+            eventBus.Subscribe<EmailEventoQueue, EmailEventoManejador>();
         }
     }
 }
